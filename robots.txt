@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ltcsentinel.com/sitemap.xml
+
+# Data files - allow indexing for transparency
+Allow: /data/
+
+# No admin or draft pages to block

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LTC Sentinel — Long-Term Care Intelligence</title>
+    <meta name="description" content="Independent analysis of nursing home quality, ownership changes, staffing trends, and regulatory data. Tracking 14,710 facilities across all 50 states using CMS public data.">
+    <link rel="canonical" href="https://ltcsentinel.com/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LTC Sentinel — Data-Driven Long-Term Care Intelligence">
+    <meta property="og:description" content="Independent analysis of nursing home quality, ownership changes, staffing trends, and regulatory data. Tracking 14,710 facilities across all 50 states using CMS public data.">
+    <meta property="og:url" content="https://ltcsentinel.com/">
+    <meta property="og:site_name" content="LTC Sentinel">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LTC Sentinel — Data-Driven Long-Term Care Intelligence">
+    <meta name="twitter:description" content="Independent analysis of nursing home quality, ownership changes, staffing trends, and regulatory data. Tracking 14,710 facilities across all 50 states using CMS public data.">
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "LTC Sentinel",
+        "url": "https://ltcsentinel.com",
+        "description": "Data-driven analysis of nursing home quality, ownership changes, and regulatory trends across 14,710 facilities.",
+        "publisher": {
+            "@type": "Organization",
+            "name": "LTC Sentinel"
+        }
+    }
+    </script>
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Inter:wght@400;450;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: {
+                    brand: { 50:'#f0f7f7', 100:'#d4eaea', 200:'#a9d5d6', 300:'#71b5b7', 400:'#4a9a9d', 500:'#0d7377', 600:'#0a5c5f', 700:'#084a4d', 800:'#063839', 900:'#042526' },
+                    ink: { 50:'#fafafa', 100:'#f4f4f5', 200:'#e4e4e7', 300:'#d4d4d8', 400:'#a1a1aa', 500:'#71717a', 600:'#52525b', 700:'#3f3f46', 800:'#27272a', 900:'#18181b' },
+                    signal: { red:'#dc2626', green:'#059669', amber:'#d97706' },
+                },
+                fontFamily: {
+                    display: ['"Playfair Display"', 'Georgia', 'serif'],
+                    sans: ['Inter', 'system-ui', 'sans-serif'],
+                    mono: ['"JetBrains Mono"', 'monospace'],
+                },
+            }}
+        }
+    </script>
+    <style>
+        html, body { overflow-x: hidden; }
+        body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+        .font-display { font-family: 'Playfair Display', Georgia, serif; }
+        .section-rule { position: relative; padding-bottom: 12px; margin-bottom: 24px; }
+        .section-rule::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #e4e4e7; }
+        .section-rule .rule-accent { display: inline-block; position: relative; z-index: 1; }
+        .section-rule .rule-accent::after { content: ''; position: absolute; bottom: -13px; left: 0; width: 100%; height: 2px; background: #0d7377; }
+        .story-link { transition: all 0.15s ease; }
+        .story-link:hover h2, .story-link:hover h3 { color: #0d7377; }
+        .cat-tag { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #0d7377; }
+        .fig { font-family: 'JetBrains Mono', monospace; }
+        .story-stack > * + * { border-top: 1px solid #f4f4f5; }
+        /* Mobile: hide nav scrollbar */
+        nav::-webkit-scrollbar { display: none; }
+        nav { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-white text-ink-900">
+
+    <!-- SLIM TOP BAR -->
+    <div class="bg-ink-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-8 flex items-center justify-between text-[11px] tracking-wide">
+            <div class="flex items-center gap-1.5">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+                <span id="top-bar-data" class="text-ink-400 font-medium"></span>
+            </div>
+            <div class="flex items-center gap-4 text-ink-400">
+                <span id="top-bar-date"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MASTHEAD -->
+    <header class="border-b border-ink-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between py-4">
+                <a href="index.html" class="group flex items-baseline gap-3">
+                    <span class="font-display text-[2rem] font-black text-ink-900 tracking-tight leading-none">LTC Sentinel</span>
+                    <span class="hidden sm:inline text-[13px] text-ink-400 font-medium border-l border-ink-200 pl-3">Long-Term Care Intelligence</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="#newsletter" class="hidden sm:flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-brand-500 rounded hover:bg-brand-600 transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+                        Subscribe
+                    </a>
+                </div>
+            </div>
+            <nav class="flex items-center gap-6 pb-3 text-[13px] font-semibold text-ink-500 overflow-x-auto">
+                <a href="articles/article.html" class="hover:text-ink-900 transition whitespace-nowrap">Reports</a>
+                <a href="#" class="hover:text-ink-900 transition whitespace-nowrap">Ownership</a>
+                <a href="#" class="hover:text-ink-900 transition whitespace-nowrap">Staffing</a>
+                <a href="#" class="hover:text-ink-900 transition whitespace-nowrap">Quality</a>
+                <a href="#" class="hover:text-ink-900 transition whitespace-nowrap">Chains</a>
+                <a href="#" class="hover:text-ink-900 transition whitespace-nowrap">Decline Watch</a>
+                <a href="dashboard.html" class="hover:text-ink-900 transition whitespace-nowrap">Data Explorer</a>
+                <a href="about.html" class="hover:text-ink-900 transition whitespace-nowrap">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- DYNAMIC CONTENT — rendered from data/content.json -->
+    <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12">
+        <p class="text-ink-400 text-sm py-20 text-center">Loading&hellip;</p>
+    </main>
+    <section id="deep-dives-section"></section>
+
+    <script>
+    const COLORS = { brand: 'text-brand-500', red: 'text-signal-red', green: 'text-signal-green', amber: 'text-signal-amber' };
+
+    function e(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    fetch('data/content.json').then(r => r.json()).then(C => {
+        // Top bar
+        document.getElementById('top-bar-data').textContent = 'LATEST DATA: ' + C.site.latest_data;
+        document.getElementById('top-bar-date').textContent = C.site.date;
+
+        const L = C.lead_story;
+        const S = C.snapshot;
+
+        // --- MAIN CONTENT ---
+        document.getElementById('main-content').innerHTML = `
+        <div class="grid grid-cols-12 gap-6 sm:gap-10">
+            <div class="col-span-12 lg:col-span-8">
+
+                <div class="section-rule"><span class="rule-accent text-xs font-extrabold text-ink-900 uppercase tracking-widest">Lead Story</span></div>
+
+                <a href="${e(L.url)}" class="block group mb-10">
+                    <div class="relative w-full overflow-hidden rounded bg-gradient-to-br from-ink-900 via-ink-800 to-brand-800 mb-5" style="aspect-ratio:16/10">
+                        <svg class="absolute inset-0 w-full h-full opacity-[0.08]" viewBox="0 0 800 400"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" stroke-width="0.5"/></pattern></defs><rect width="800" height="400" fill="url(#grid)"/></svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <svg width="500" height="250" viewBox="0 0 500 250" class="opacity-40"><g transform="translate(50,200)"><rect x="0" y="-160" width="28" height="160" rx="2" fill="#71b5b7" opacity="0.8"/><rect x="40" y="-145" width="28" height="145" rx="2" fill="#71b5b7" opacity="0.75"/><rect x="80" y="-155" width="28" height="155" rx="2" fill="#71b5b7" opacity="0.7"/><rect x="120" y="-140" width="28" height="140" rx="2" fill="#71b5b7" opacity="0.65"/><rect x="160" y="-130" width="28" height="130" rx="2" fill="#71b5b7" opacity="0.6"/><rect x="200" y="-115" width="28" height="115" rx="2" fill="#4a9a9d" opacity="0.55"/><rect x="240" y="-95" width="28" height="95" rx="2" fill="#4a9a9d" opacity="0.5"/><rect x="280" y="-70" width="28" height="70" rx="2" fill="#d97706" opacity="0.5"/><rect x="320" y="-50" width="28" height="50" rx="2" fill="#dc2626" opacity="0.45"/><rect x="360" y="-30" width="28" height="30" rx="2" fill="#dc2626" opacity="0.4"/></g><path d="M 64,45 L 104,60 L 144,50 L 184,65 L 224,75 L 264,90 L 304,110 L 344,135 L 384,155 L 424,175" fill="none" stroke="white" stroke-width="2" stroke-dasharray="4,3" opacity="0.5"/></svg>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-8 bg-gradient-to-t from-ink-900/90 via-ink-900/50 to-transparent">
+                            <div class="cat-tag text-brand-300 mb-3">${e(L.category)}</div>
+                            <h2 class="font-display text-2xl sm:text-3xl md:text-[2.75rem] font-bold text-white leading-[1.1] mb-3 group-hover:text-brand-200 transition">${e(L.title)}</h2>
+                            <p class="text-ink-300 text-sm sm:text-[15px] leading-relaxed max-w-2xl mb-4">${e(L.description)}</p>
+                            <div class="flex items-center gap-3 text-xs text-ink-400">
+                                <span class="font-semibold text-ink-300">${e(L.author)}</span>
+                                <span class="text-ink-600">&middot;</span><span>${e(L.date)}</span>
+                                <span class="text-ink-600">&middot;</span><span>${e(L.read_time)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <div class="section-rule"><span class="rule-accent text-xs font-extrabold text-ink-900 uppercase tracking-widest">Analysis</span></div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    ${C.analysis.map(a => `
+                    <a href="${e(a.url)}" class="story-link block group">
+                        <div class="cat-tag mb-2">${e(a.category)}</div>
+                        <h3 class="font-display text-[1.35rem] font-bold leading-snug text-ink-900 mb-2 transition">${e(a.title)}</h3>
+                        <p class="text-[13px] text-ink-500 leading-relaxed mb-3">${e(a.description)}</p>
+                        ${a.stat_value ? `<div class="flex items-center gap-2 text-xs text-ink-400"><span class="fig ${COLORS[a.stat_color]||''} font-bold">${e(a.stat_value)}</span><span>${e(a.stat_label)}</span></div>` : ''}
+                    </a>`).join('')}
+                </div>
+
+                ${(function() {
+                    let html = '';
+                    const pairs = [];
+                    for (let i = 0; i < C.stories.length; i += 2) {
+                        pairs.push(C.stories.slice(i, i + 2));
+                    }
+                    pairs.forEach(pair => {
+                        html += '<div class="border-t border-ink-100 pt-8 mb-10"><div class="grid md:grid-cols-2 gap-8">';
+                        pair.forEach(s => {
+                            html += '<a href="' + e(s.url) + '" class="story-link block group"><div class="cat-tag mb-2">' + e(s.category) + '</div><h3 class="font-display text-lg font-bold leading-snug text-ink-900 mb-2 transition">' + e(s.title) + '</h3><p class="text-[13px] text-ink-500 leading-relaxed">' + e(s.description) + '</p><div class="text-xs text-ink-400 mt-2">' + e(s.date) + '</div></a>';
+                        });
+                        html += '</div></div>';
+                    });
+                    return html;
+                })()}
+            </div>
+
+            <aside class="col-span-12 lg:col-span-4">
+                <div class="section-rule"><span class="rule-accent text-xs font-extrabold text-ink-900 uppercase tracking-widest">Latest</span></div>
+                <div class="story-stack">
+                    ${C.latest.map((l,i) => `
+                    <a href="${e(l.url)}" class="story-link block py-3.5${i===0?' first:pt-0':''}">
+                        <div class="flex items-center gap-2 mb-1"><span class="cat-tag" style="font-size:10px">${e(l.category)}</span><span class="text-ink-300 text-[10px]">&middot;</span><span class="text-[10px] text-ink-400">${e(l.time)}</span></div>
+                        <h3 class="text-[13px] font-semibold leading-snug text-ink-800 transition">${e(l.title)}</h3>
+                    </a>`).join('')}
+                </div>
+
+                <div class="mt-8 section-rule"><span class="rule-accent text-xs font-extrabold text-ink-900 uppercase tracking-widest">By the Numbers</span></div>
+                <div class="bg-ink-900 rounded p-5 mt-1">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><div class="fig text-xl font-bold text-white">${e(S.facilities.value)}</div><div class="text-[10px] text-ink-400 mt-0.5">Active Facilities</div><div class="fig text-[10px] text-signal-${S.facilities.direction==='down'?'red':'green'} font-medium mt-0.5">${e(S.facilities.change)}</div></div>
+                        <div><div class="fig text-xl font-bold text-white">${e(S.residents.value)}</div><div class="text-[10px] text-ink-400 mt-0.5">Total Residents</div><div class="fig text-[10px] text-signal-${S.residents.direction==='down'?'red':'green'} font-medium mt-0.5">${e(S.residents.change)}</div></div>
+                        <div><div class="fig text-xl font-bold text-white">${e(S.occupancy.value)}</div><div class="text-[10px] text-ink-400 mt-0.5">Avg Occupancy</div><div class="fig text-[10px] text-signal-${S.occupancy.direction==='down'?'red':'green'} font-medium mt-0.5">${e(S.occupancy.change)}</div></div>
+                        <div><div class="fig text-xl font-bold text-white">${e(S.fines.value)}</div><div class="text-[10px] text-ink-400 mt-0.5">Total Fines</div><div class="fig text-[10px] text-signal-${S.fines.direction==='down'?'red':'green'} font-medium mt-0.5">${e(S.fines.change)}</div></div>
+                    </div>
+                    <div class="border-t border-ink-700 mt-4 pt-3 flex items-center justify-between">
+                        <span class="text-[10px] text-ink-500">${e(S.period)}</span>
+                        <a href="dashboard.html" class="text-[11px] text-brand-400 font-bold hover:text-brand-300 transition">Full Dashboard →</a>
+                    </div>
+                </div>
+
+                <div class="mt-8 section-rule"><span class="rule-accent text-xs font-extrabold text-ink-900 uppercase tracking-widest">CHOW Tracker</span></div>
+                <div class="border border-ink-100 rounded p-4">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="flex-shrink-0 w-8 h-8 rounded bg-signal-amber/10 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-signal-amber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+                        </div>
+                        <div><div class="text-sm font-bold text-ink-900">${C.chow_tracker.count} Active CHOWs</div><div class="text-xs text-ink-500 mt-0.5">${e(C.chow_tracker.label)}</div></div>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        ${C.chow_tracker.items.map(i => `<div class="flex justify-between text-ink-600"><span>${e(i.name)}</span><span class="text-ink-400">${e(i.state)}</span></div>`).join('')}
+                    </div>
+                    <a href="${e(C.chow_tracker.link)}" class="block mt-3 text-[11px] text-brand-500 font-bold hover:text-brand-600 transition">View All ${C.chow_tracker.count} →</a>
+                </div>
+
+                <div id="newsletter" class="mt-8 bg-brand-50 border border-brand-100 rounded p-5">
+                    <div class="text-sm font-bold text-ink-900 mb-1">Weekly Briefing</div>
+                    <p class="text-xs text-ink-500 mb-3">Data-driven LTC analysis delivered every Monday.</p>
+                    <form class="flex gap-2">
+                        <input type="email" placeholder="you@company.com" class="flex-1 px-3 py-2 text-xs border border-brand-200 rounded bg-white focus:outline-none focus:border-brand-400 focus:ring-1 focus:ring-brand-400">
+                        <button type="submit" class="px-3 py-2 bg-brand-500 text-white text-xs font-bold rounded hover:bg-brand-600 transition">Go</button>
+                    </form>
+                </div>
+            </aside>
+        </div>`;
+
+        // --- DEEP DIVES ---
+        document.getElementById('deep-dives-section').innerHTML = `
+        <div class="border-t border-ink-200 bg-ink-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+                <div class="section-rule"><span class="rule-accent text-xs font-extrabold text-ink-900 uppercase tracking-widest">Deep Dives</span></div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    ${C.deep_dives.map(d => `
+                    <a href="${e(d.url)}" class="story-link block group p-4 -m-4 rounded bg-white">
+                        <div class="fig text-2xl font-bold ${COLORS[d.stat_color]||''} mb-2">${e(d.stat)}</div>
+                        <h3 class="font-display text-lg font-bold text-ink-900 mb-2 leading-snug transition">${e(d.title)}</h3>
+                        <p class="text-[13px] text-ink-500 leading-relaxed">${e(d.description)}</p>
+                    </a>`).join('')}
+                </div>
+            </div>
+        </div>`;
+    });
+    </script>
+
+    <!-- FOOTER -->
+    <footer class="bg-ink-900 text-ink-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+                <div>
+                    <div class="font-display text-xl font-bold text-white mb-2">LTC Sentinel</div>
+                    <p class="text-xs text-ink-400 leading-relaxed">Independent, data-driven analysis of the long-term care industry.</p>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-500 mb-3">Coverage</div>
+                    <ul class="space-y-2 text-[13px]"><li><a href="articles/article.html" class="hover:text-white transition">Reports</a></li><li><a href="#" class="hover:text-white transition">Decline Watch</a></li><li><a href="#" class="hover:text-white transition">Ownership & M&A</a></li><li><a href="#" class="hover:text-white transition">Chain Analysis</a></li></ul>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-500 mb-3">Data</div>
+                    <ul class="space-y-2 text-[13px]"><li><a href="dashboard.html" class="hover:text-white transition">Data Explorer</a></li><li><a href="#" class="hover:text-white transition">CMS Care Compare</a></li><li><a href="#" class="hover:text-white transition">PBJ Staffing</a></li><li><a href="#" class="hover:text-white transition">Methodology</a></li></ul>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-500 mb-3">Company</div>
+                    <ul class="space-y-2 text-[13px]"><li><a href="about.html" class="hover:text-white transition">About</a></li><li><a href="mailto:hello@ltcsentinel.com" class="hover:text-white transition">Contact</a></li><li><a href="#" class="hover:text-white transition">Privacy</a></li><li><a href="#" class="hover:text-white transition">Terms</a></li></ul>
+                </div>
+            </div>
+            <div class="border-t border-ink-800 pt-6 flex flex-col sm:flex-row justify-between gap-3 text-[11px] text-ink-500">
+                <p>&copy; 2026 LTC Sentinel. All rights reserved.</p>
+                <p>Data sourced from CMS public datasets. Not affiliated with CMS or HHS.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Explorer — LTC Sentinel</title>
+    <meta name="description" content="Explore data on 14,710 nursing homes. Search by state, chain, rating, and decline score. Interactive dashboard with CMS Care Compare, PBJ staffing, and quality measures.">
+    <link rel="canonical" href="https://ltcsentinel.com/dashboard.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="National LTC Dashboard — LTC Sentinel">
+    <meta property="og:description" content="Explore data on 14,710 nursing homes. Search by state, chain, rating, and decline score. Interactive dashboard with CMS Care Compare, PBJ staffing, and quality measures.">
+    <meta property="og:url" content="https://ltcsentinel.com/dashboard.html">
+    <meta property="og:site_name" content="LTC Sentinel">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="National LTC Dashboard — LTC Sentinel">
+    <meta name="twitter:description" content="Explore data on 14,710 nursing homes. Search by state, chain, rating, and decline score. Interactive dashboard with CMS Care Compare, PBJ staffing, and quality measures.">
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: {
+                    brand: { 50:'#f0f7f7',100:'#d4eaea',200:'#a9d5d6',300:'#71b5b7',400:'#4a9a9d',500:'#0d7377',600:'#0a5c5f',700:'#084a4d',800:'#063839',900:'#042526' },
+                    ink: { 50:'#fafafa',100:'#f4f4f5',200:'#e4e4e7',300:'#d4d4d8',400:'#a1a1aa',500:'#71717a',600:'#52525b',700:'#3f3f46',800:'#27272a',900:'#18181b' },
+                    signal: { red:'#dc2626', green:'#059669', amber:'#d97706' },
+                },
+                fontFamily: {
+                    display: ['"Playfair Display"','Georgia','serif'],
+                    sans: ['Inter','system-ui','sans-serif'],
+                    mono: ['"JetBrains Mono"','monospace'],
+                },
+            }}
+        }
+    </script>
+    <style>
+        html, body { overflow-x: hidden; }
+        body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+        .font-display { font-family: 'Playfair Display', Georgia, serif; }
+        .fig { font-family: 'JetBrains Mono', monospace; }
+        .cat-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #0d7377; }
+        .section-rule { position: relative; padding-bottom: 12px; margin-bottom: 20px; }
+        .section-rule::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: #e4e4e7; }
+        .section-rule .rule-accent { display: inline-block; position: relative; z-index: 1; }
+        .section-rule .rule-accent::after { content: ''; position: absolute; bottom: -13px; left: 0; width: 100%; height: 2px; background: #0d7377; }
+
+        /* Tabs */
+        .tab { padding: 8px 16px; font-size: 13px; font-weight: 600; color: #71717a; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+        .tab:hover { color: #18181b; }
+        .tab.active { color: #0d7377; border-color: #0d7377; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Table */
+        .dt { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .dt th { padding: 8px 10px; text-align: left; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #52525b; border-bottom: 2px solid #e4e4e7; background: #fafafa; position: sticky; top: 0; z-index: 5; cursor: pointer; user-select: none; }
+        .dt th:hover { background: #f4f4f5; }
+        .dt th .sort-icon { opacity: 0.3; margin-left: 3px; }
+        .dt th.sorted .sort-icon { opacity: 1; color: #0d7377; }
+        .dt td { padding: 7px 10px; border-bottom: 1px solid #f4f4f5; color: #3f3f46; }
+        .dt tr:hover { background: #fafafa; }
+        .dt .fig { font-size: 11px; }
+
+        .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .badge-red { background: #fef2f2; color: #dc2626; }
+        .badge-green { background: #f0fdf4; color: #059669; }
+        .badge-amber { background: #fffbeb; color: #d97706; }
+        .badge-gray { background: #f4f4f5; color: #71717a; }
+
+        .search-input { width: 100%; padding: 10px 14px 10px 36px; font-size: 13px; border: 1px solid #e4e4e7; border-radius: 6px; background: #fafafa; outline: none; transition: all 0.15s; }
+        .search-input:focus { border-color: #0d7377; background: white; box-shadow: 0 0 0 3px rgba(13,115,119,0.08); }
+
+        select.filter-select { padding: 6px 28px 6px 10px; font-size: 12px; font-weight: 600; border: 1px solid #e4e4e7; border-radius: 4px; background: white; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+        select.filter-select:focus { border-color: #0d7377; }
+
+        .table-wrap { max-height: 600px; overflow-y: auto; border: 1px solid #e4e4e7; border-radius: 6px; }
+        .table-wrap::-webkit-scrollbar { width: 6px; }
+        .table-wrap::-webkit-scrollbar-track { background: #fafafa; }
+        .table-wrap::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+
+        .kpi { text-align: center; padding: 20px 12px; border: 1px solid #e4e4e7; border-radius: 8px; background: white; }
+        .kpi .val { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; }
+        .kpi .label { font-size: 10px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-top: 4px; }
+        .kpi .delta { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; margin-top: 2px; }
+    </style>
+</head>
+<body class="bg-ink-50 text-ink-900">
+
+    <!-- TOP BAR -->
+    <div class="bg-ink-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-8 flex items-center justify-between text-[11px] tracking-wide">
+            <div class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span><span class="text-ink-400 font-medium">LATEST DATA: February 2026 CMS Release</span></div>
+            <span class="text-ink-400">March 19, 2026</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="bg-white border-b border-ink-200">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between py-3">
+            <a href="index.html" class="font-display text-xl font-black text-ink-900 tracking-tight">LTC Sentinel</a>
+            <nav class="flex items-center gap-6 text-[13px] font-semibold text-ink-500">
+                <a href="articles/article.html" class="hover:text-ink-900 transition">Reports</a>
+                <a href="dashboard.html" class="text-brand-500">Data Explorer</a>
+                <a href="about.html" class="hover:text-ink-900 transition">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+
+        <!-- Page Title -->
+        <div class="mb-6">
+            <div class="cat-tag mb-2">Data Explorer</div>
+            <h1 class="font-display text-3xl font-black text-ink-900">National LTC Dashboard</h1>
+            <p class="text-sm text-ink-500 mt-1">Explore 14,710 nursing home facilities across all 50 states. Data from CMS Care Compare, PBJ, and MDS.</p>
+        </div>
+
+        <!-- KPI ROW -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8" id="kpiRow">
+            <div class="kpi"><div class="val text-ink-900">—</div><div class="label">Facilities</div><div class="delta">—</div></div>
+            <div class="kpi"><div class="val text-ink-900">—</div><div class="label">Residents</div><div class="delta">—</div></div>
+            <div class="kpi"><div class="val text-ink-900">—</div><div class="label">Avg Occupancy</div><div class="delta">—</div></div>
+            <div class="kpi"><div class="val text-ink-900">—</div><div class="label">Staff Turnover</div><div class="delta">—</div></div>
+            <div class="kpi"><div class="val text-ink-900">—</div><div class="label">Total Fines</div><div class="delta">—</div></div>
+        </div>
+
+        <!-- TABS -->
+        <div class="bg-white rounded-lg border border-ink-200 overflow-hidden">
+            <div class="flex border-b border-ink-200 px-4 bg-ink-50">
+                <div class="tab active" data-tab="facilities">Facilities</div>
+                <div class="tab" data-tab="decline">Decline Watch</div>
+                <div class="tab" data-tab="ownership">Ownership Changes</div>
+                <div class="tab" data-tab="chains">Top Chains</div>
+            </div>
+
+            <!-- TAB: FACILITIES -->
+            <div class="tab-panel active" id="tab-facilities">
+                <div class="p-4 border-b border-ink-100 flex flex-wrap gap-3 items-center">
+                    <div class="relative flex-1 min-w-[250px]">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="searchFacilities" class="search-input" placeholder="Search by name, city, or state...">
+                    </div>
+                    <select id="filterState" class="filter-select"><option value="">All States</option></select>
+                    <select id="filterOwnership" class="filter-select"><option value="">All Ownership</option></select>
+                    <select id="filterRating" class="filter-select">
+                        <option value="">All Ratings</option>
+                        <option value="1">1 Star</option>
+                        <option value="2">2 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="4">4 Stars</option>
+                        <option value="5">5 Stars</option>
+                    </select>
+                    <div class="text-xs text-ink-400 font-medium" id="facilityCount">Loading...</div>
+                </div>
+                <div class="table-wrap">
+                    <table class="dt" id="facilityTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="name">Name <span class="sort-icon">↕</span></th>
+                                <th data-sort="city">City <span class="sort-icon">↕</span></th>
+                                <th data-sort="state">St <span class="sort-icon">↕</span></th>
+                                <th data-sort="total_residents" style="text-align:right">Residents <span class="sort-icon">↕</span></th>
+                                <th data-sort="ownership">Ownership <span class="sort-icon">↕</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="facilityBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: DECLINE WATCH -->
+            <div class="tab-panel" id="tab-decline">
+                <div class="p-4 border-b border-ink-100 flex flex-wrap gap-3 items-center">
+                    <div class="relative flex-1 min-w-[250px]">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="searchDecline" class="search-input" placeholder="Search decline facilities...">
+                    </div>
+                    <select id="filterDeclineState" class="filter-select"><option value="">All States</option></select>
+                    <div class="text-xs text-ink-400 font-medium" id="declineCount">Loading...</div>
+                </div>
+                <div class="table-wrap">
+                    <table class="dt" id="declineTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="decline_score" class="sorted" style="text-align:right">Score <span class="sort-icon">↓</span></th>
+                                <th data-sort="name">Facility <span class="sort-icon">↕</span></th>
+                                <th data-sort="state">St <span class="sort-icon">↕</span></th>
+                                <th data-sort="beds" style="text-align:right">Beds <span class="sort-icon">↕</span></th>
+                                <th data-sort="occupancy" style="text-align:right">Occ% <span class="sort-icon">↕</span></th>
+                                <th data-sort="overall_rating" style="text-align:right">Stars <span class="sort-icon">↕</span></th>
+                                <th>Signals</th>
+                            </tr>
+                        </thead>
+                        <tbody id="declineBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: OWNERSHIP -->
+            <div class="tab-panel" id="tab-ownership">
+                <div class="p-4 border-b border-ink-100 flex flex-wrap gap-3 items-center">
+                    <div class="relative flex-1 min-w-[250px]">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="searchOwnership" class="search-input" placeholder="Search ownership changes...">
+                    </div>
+                    <div class="text-xs text-ink-400 font-medium" id="ownershipCount">Loading...</div>
+                </div>
+                <div class="table-wrap">
+                    <table class="dt" id="ownershipTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="name">Facility <span class="sort-icon">↕</span></th>
+                                <th data-sort="state">St <span class="sort-icon">↕</span></th>
+                                <th>Previous Entity</th>
+                                <th>New Entity</th>
+                                <th data-sort="overall_rating" style="text-align:right">Stars <span class="sort-icon">↕</span></th>
+                                <th data-sort="fine_dollars" style="text-align:right">Fines <span class="sort-icon">↕</span></th>
+                                <th>CHOW</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownershipBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: CHAINS -->
+            <div class="tab-panel" id="tab-chains">
+                <div class="p-4 border-b border-ink-100">
+                    <p class="text-xs text-ink-500">Top 20 nursing home chains by number of facilities. Source: CMS Chain Performance Measures, February 2026.</p>
+                </div>
+                <div class="table-wrap">
+                    <table class="dt" id="chainTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="name">Chain <span class="sort-icon">↕</span></th>
+                                <th data-sort="num_facilities" style="text-align:right">Facilities <span class="sort-icon">↕</span></th>
+                                <th data-sort="num_states" style="text-align:right">States <span class="sort-icon">↕</span></th>
+                                <th data-sort="avg_overall_rating" style="text-align:right">Avg ★ <span class="sort-icon">↕</span></th>
+                                <th data-sort="avg_turnover_pct" style="text-align:right">Turnover <span class="sort-icon">↕</span></th>
+                                <th data-sort="total_fines_dollars" style="text-align:right">Total Fines <span class="sort-icon">↕</span></th>
+                                <th data-sort="avg_nurse_hrs_per_day" style="text-align:right">Nurse Hrs/Day <span class="sort-icon">↕</span></th>
+                                <th data-sort="avg_rn_turnover_pct" style="text-align:right">RN Turnover <span class="sort-icon">↕</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="chainBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Source note -->
+        <div class="mt-6 text-[11px] text-ink-400">
+            <strong class="text-ink-500">Sources:</strong> CMS Care Compare Provider Information (Feb 2026), Chain Performance Measures, PBJ Employee Detail (Q3 2025), MDS Quality Measures (Q4 2025). All data from <a href="https://data.cms.gov" class="text-brand-500 hover:underline">data.cms.gov</a>.
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-ink-900 text-ink-400 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row justify-between gap-3 text-[11px]">
+            <a href="index.html" class="font-display text-lg font-bold text-white">LTC Sentinel</a>
+            <p>&copy; 2026 LTC Sentinel. Data sourced from CMS. Not affiliated with CMS or HHS.</p>
+        </div>
+    </footer>
+
+    <script>
+    // ===== DATA LOADING =====
+    let facilitiesData = [], declineData = [], entityData = [], chainData = [], nationalTrends = [];
+
+    async function loadData() {
+        const [fRes, tRes, cRes] = await Promise.all([
+            fetch('data/facilities_list.json'),
+            fetch('data/trends.json'),
+            fetch('data/chain_performance.json'),
+        ]);
+        facilitiesData = await fRes.json();
+        const trends = await tRes.json();
+        const chains = await cRes.json();
+
+        nationalTrends = trends.national_trends || [];
+        declineData = trends.decline_facilities || [];
+        entityData = trends.entity_changes || [];
+        const chowData = trends.ownership_changes || [];
+        // Merge CHOW flag
+        const chowIds = new Set(chowData.map(c => c.id || c.name));
+        entityData.forEach(e => { e.chow_flagged = e.chow_flagged || chowIds.has(e.id) || chowIds.has(e.name); });
+
+        chainData = chains.top_20_by_size || [];
+
+        renderKPIs();
+        populateFilters();
+        renderFacilities();
+        renderDecline();
+        renderOwnership();
+        renderChains();
+    }
+
+    // ===== KPIs =====
+    function renderKPIs() {
+        if (nationalTrends.length < 2) return;
+        const latest = nationalTrends[nationalTrends.length - 1];
+        const first = nationalTrends[0];
+        const kpis = [
+            { val: latest.total_facilities?.toLocaleString(), label: 'Facilities', delta: latest.total_facilities - first.total_facilities, fmt: v => (v > 0 ? '+' : '') + v.toLocaleString(), color: v => v < 0 ? 'text-signal-red' : 'text-signal-green' },
+            { val: (latest.total_residents / 1e6).toFixed(2) + 'M', label: 'Residents', delta: latest.total_residents - first.total_residents, fmt: v => (v > 0 ? '+' : '') + v.toLocaleString(), color: v => v > 0 ? 'text-signal-green' : 'text-signal-red' },
+            { val: latest.avg_occupancy?.toFixed(1) + '%', label: 'Avg Occupancy', delta: latest.avg_occupancy - first.avg_occupancy, fmt: v => (v > 0 ? '+' : '') + v.toFixed(1) + ' pts', color: v => v > 0 ? 'text-signal-green' : 'text-signal-red' },
+            { val: latest.avg_turnover?.toFixed(1) + '%', label: 'Staff Turnover', delta: latest.avg_turnover - first.avg_turnover, fmt: v => (v > 0 ? '+' : '') + v.toFixed(1) + ' pts', color: v => v < 0 ? 'text-signal-green' : 'text-signal-red' },
+            { val: '$' + (latest.total_fines / 1e6).toFixed(0) + 'M', label: 'Total Fines', delta: latest.total_fines - first.total_fines, fmt: v => (v > 0 ? '+' : '') + '$' + (Math.abs(v) / 1e6).toFixed(0) + 'M', color: v => v < 0 ? 'text-signal-green' : 'text-signal-red' },
+        ];
+        const row = document.getElementById('kpiRow');
+        row.innerHTML = kpis.map(k => `
+            <div class="kpi">
+                <div class="val text-ink-900">${k.val}</div>
+                <div class="label">${k.label}</div>
+                <div class="delta ${k.color(k.delta)}">${k.fmt(k.delta)}</div>
+            </div>
+        `).join('');
+    }
+
+    // ===== FILTERS =====
+    function populateFilters() {
+        const states = [...new Set(facilitiesData.map(f => f.state))].sort();
+        const ownerships = [...new Set(facilitiesData.map(f => f.ownership))].filter(Boolean).sort();
+        const stateOpts = states.map(s => `<option value="${s}">${s}</option>`).join('');
+        document.getElementById('filterState').innerHTML = '<option value="">All States</option>' + stateOpts;
+        document.getElementById('filterDeclineState').innerHTML = '<option value="">All States</option>' + stateOpts;
+        document.getElementById('filterOwnership').innerHTML = '<option value="">All Ownership</option>' + ownerships.map(o => `<option value="${o}">${o}</option>`).join('');
+    }
+
+    // ===== FACILITIES TABLE =====
+    let facSortCol = 'name', facSortDir = 1;
+    function renderFacilities() {
+        const q = document.getElementById('searchFacilities').value.toLowerCase();
+        const st = document.getElementById('filterState').value;
+        const own = document.getElementById('filterOwnership').value;
+        const rat = document.getElementById('filterRating').value;
+
+        let filtered = facilitiesData.filter(f => {
+            if (q && !f.name.toLowerCase().includes(q) && !f.city.toLowerCase().includes(q) && !f.state.toLowerCase().includes(q)) return false;
+            if (st && f.state !== st) return false;
+            if (own && f.ownership !== own) return false;
+            return true;
+        });
+
+        filtered.sort((a, b) => {
+            let av = a[facSortCol], bv = b[facSortCol];
+            if (typeof av === 'string') return facSortDir * av.localeCompare(bv);
+            return facSortDir * ((av || 0) - (bv || 0));
+        });
+
+        const showing = filtered.slice(0, 200);
+        document.getElementById('facilityCount').textContent = `Showing ${Math.min(200, filtered.length)} of ${filtered.length.toLocaleString()}`;
+
+        document.getElementById('facilityBody').innerHTML = showing.map(f => `
+            <tr>
+                <td><strong>${esc(f.name)}</strong></td>
+                <td>${esc(f.city)}</td>
+                <td class="fig">${f.state}</td>
+                <td class="fig" style="text-align:right">${f.total_residents ?? '—'}</td>
+                <td class="text-ink-500" style="font-size:11px">${esc(shortOwnership(f.ownership))}</td>
+            </tr>
+        `).join('');
+    }
+
+    // ===== DECLINE TABLE =====
+    let decSortCol = 'decline_score', decSortDir = -1;
+    function renderDecline() {
+        const q = document.getElementById('searchDecline').value.toLowerCase();
+        const st = document.getElementById('filterDeclineState').value;
+
+        let filtered = declineData.filter(f => {
+            if (q && !f.name.toLowerCase().includes(q)) return false;
+            if (st && f.state !== st) return false;
+            return true;
+        });
+
+        filtered.sort((a, b) => {
+            let av = a[decSortCol], bv = b[decSortCol];
+            if (typeof av === 'string') return decSortDir * av.localeCompare(bv);
+            return decSortDir * ((av || 0) - (bv || 0));
+        });
+
+        document.getElementById('declineCount').textContent = `${filtered.length} facilities`;
+
+        document.getElementById('declineBody').innerHTML = filtered.slice(0, 200).map(f => {
+            const occBadge = f.occupancy < 50 ? 'badge-red' : f.occupancy < 65 ? 'badge-amber' : 'badge-gray';
+            const starBadge = (f.overall_rating || 0) <= 1 ? 'badge-red' : (f.overall_rating || 0) >= 4 ? 'badge-green' : 'badge-gray';
+            const signals = (f.signals || []).slice(0, 3).join(' · ');
+            return `
+            <tr>
+                <td class="fig" style="text-align:right"><strong>${f.decline_score}</strong></td>
+                <td><strong>${esc(f.name)}</strong></td>
+                <td class="fig">${f.state}</td>
+                <td class="fig" style="text-align:right">${f.beds}</td>
+                <td style="text-align:right"><span class="badge ${occBadge}">${f.occupancy}%</span></td>
+                <td style="text-align:right"><span class="badge ${starBadge}">${f.overall_rating ?? '—'}★</span></td>
+                <td class="text-ink-500" style="font-size:10px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(signals)}">${esc(signals)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ===== OWNERSHIP TABLE =====
+    let ownSortCol = 'fine_dollars', ownSortDir = -1;
+    function renderOwnership() {
+        const q = document.getElementById('searchOwnership').value.toLowerCase();
+
+        let filtered = entityData.filter(f => {
+            if (q && !f.name.toLowerCase().includes(q) && !(f.old_entity||'').toLowerCase().includes(q) && !(f.new_entity||'').toLowerCase().includes(q)) return false;
+            return true;
+        });
+
+        filtered.sort((a, b) => {
+            let av = a[ownSortCol], bv = b[ownSortCol];
+            if (typeof av === 'string') return ownSortDir * av.localeCompare(bv);
+            return ownSortDir * ((av || 0) - (bv || 0));
+        });
+
+        document.getElementById('ownershipCount').textContent = `${filtered.length} entity changes`;
+
+        document.getElementById('ownershipBody').innerHTML = filtered.slice(0, 200).map(f => {
+            const fines = f.fine_dollars ? '$' + (f.fine_dollars >= 1000 ? (f.fine_dollars/1000).toFixed(0) + 'K' : f.fine_dollars) : '$0';
+            const starBadge = (f.overall_rating || 0) <= 1 ? 'badge-red' : (f.overall_rating || 0) >= 4 ? 'badge-green' : 'badge-gray';
+            return `
+            <tr>
+                <td><strong>${esc(f.name)}</strong></td>
+                <td class="fig">${f.state}</td>
+                <td class="text-ink-500" style="font-size:10px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(f.old_entity)}">${esc(f.old_entity)}</td>
+                <td class="text-ink-500" style="font-size:10px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(f.new_entity)}">${esc(f.new_entity)}</td>
+                <td style="text-align:right"><span class="badge ${starBadge}">${f.overall_rating ?? '—'}★</span></td>
+                <td class="fig" style="text-align:right">${fines}</td>
+                <td>${f.chow_flagged ? '<span class="badge badge-amber">CHOW</span>' : ''}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ===== CHAINS TABLE =====
+    let chainSortCol = 'num_facilities', chainSortDir = -1;
+    function renderChains() {
+        let sorted = [...chainData].sort((a, b) => {
+            let av = a[chainSortCol], bv = b[chainSortCol];
+            if (typeof av === 'string') return chainSortDir * av.localeCompare(bv);
+            return chainSortDir * ((av || 0) - (bv || 0));
+        });
+
+        document.getElementById('chainBody').innerHTML = sorted.map(c => {
+            const starBadge = c.avg_overall_rating <= 2.5 ? 'badge-red' : c.avg_overall_rating >= 3.5 ? 'badge-green' : 'badge-gray';
+            const fines = '$' + (c.total_fines_dollars / 1e6).toFixed(1) + 'M';
+            return `
+            <tr>
+                <td><strong>${esc(c.name)}</strong></td>
+                <td class="fig" style="text-align:right">${c.num_facilities}</td>
+                <td class="fig" style="text-align:right">${c.num_states}</td>
+                <td style="text-align:right"><span class="badge ${starBadge}">${c.avg_overall_rating}</span></td>
+                <td class="fig" style="text-align:right">${c.avg_turnover_pct}%</td>
+                <td class="fig" style="text-align:right">${fines}</td>
+                <td class="fig" style="text-align:right">${c.avg_nurse_hrs_per_day}</td>
+                <td class="fig" style="text-align:right">${c.avg_rn_turnover_pct}%</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ===== HELPERS =====
+    function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function shortOwnership(o) {
+        return (o||'').replace('For Profit - ','FP: ').replace('Non-Profit - ','NP: ').replace('Government - ','Gov: ');
+    }
+
+    // ===== TAB SWITCHING =====
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ===== SORT HANDLERS =====
+    document.querySelectorAll('.dt th[data-sort]').forEach(th => {
+        th.addEventListener('click', () => {
+            const col = th.dataset.sort;
+            const table = th.closest('table');
+            const id = table.id;
+
+            if (id === 'facilityTable') {
+                facSortDir = facSortCol === col ? -facSortDir : 1;
+                facSortCol = col;
+                renderFacilities();
+            } else if (id === 'declineTable') {
+                decSortDir = decSortCol === col ? -decSortDir : -1;
+                decSortCol = col;
+                renderDecline();
+            } else if (id === 'ownershipTable') {
+                ownSortDir = ownSortCol === col ? -ownSortDir : -1;
+                ownSortCol = col;
+                renderOwnership();
+            } else if (id === 'chainTable') {
+                chainSortDir = chainSortCol === col ? -chainSortDir : -1;
+                chainSortCol = col;
+                renderChains();
+            }
+        });
+    });
+
+    // ===== SEARCH / FILTER HANDLERS =====
+    let debounceTimer;
+    function debounce(fn) { clearTimeout(debounceTimer); debounceTimer = setTimeout(fn, 200); }
+
+    document.getElementById('searchFacilities').addEventListener('input', () => debounce(renderFacilities));
+    document.getElementById('filterState').addEventListener('change', renderFacilities);
+    document.getElementById('filterOwnership').addEventListener('change', renderFacilities);
+    document.getElementById('filterRating').addEventListener('change', renderFacilities);
+    document.getElementById('searchDecline').addEventListener('input', () => debounce(renderDecline));
+    document.getElementById('filterDeclineState').addEventListener('change', renderDecline);
+    document.getElementById('searchOwnership').addEventListener('input', () => debounce(renderOwnership));
+
+    // ===== INIT =====
+    loadData();
+    </script>
+</body>
+</html>

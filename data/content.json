@@ -1,0 +1,152 @@
+{
+  "site": {
+    "name": "LTC Sentinel",
+    "tagline": "Long-Term Care Intelligence",
+    "latest_data": "February 2026 CMS Release",
+    "date": "March 19, 2026"
+  },
+
+  "snapshot": {
+    "facilities": { "value": "14,710", "change": "▼ 168", "direction": "down" },
+    "residents":  { "value": "1.24M",  "change": "▲ 34,796", "direction": "up" },
+    "occupancy":  { "value": "79.0%",  "change": "▲ 3.1 pts", "direction": "up" },
+    "fines":      { "value": "$480M",  "change": "▼ $86M", "direction": "up" },
+    "period": "Feb 2026 vs Mar 2024"
+  },
+
+  "lead_story": {
+    "url": "articles/article.html",
+    "category": "Special Report",
+    "title": "The State of Long-Term Care in 2026: Recovery, Reshuffling, and Red Flags",
+    "description": "168 nursing homes closed. Nearly 2,000 changed owners. 5,687 showing decline signals. Two years of CMS data reveal what's really happening.",
+    "author": "LTC Sentinel Research",
+    "date": "March 19, 2026",
+    "read_time": "12 min read"
+  },
+
+  "analysis": [
+    {
+      "url": "articles/article-florida-opco.html",
+      "category": "Ownership",
+      "title": "Florida's \"Opco\" Wave: What's Behind the LLC Shuffle in Nursing Homes",
+      "description": "Dozens of Florida facilities are being restructured under new operating entities. We follow the paper trail.",
+      "stat_value": "1,995",
+      "stat_label": "entity changes tracked",
+      "stat_color": "brand"
+    },
+    {
+      "url": "articles/article-thunderbolt.html",
+      "category": "Decline Watch",
+      "title": "5,687 Facilities Showing Warning Signs — Texas and Illinois Lead",
+      "description": "Census drops, rising fines, plummeting ratings. Our scoring model identifies the homes most at risk.",
+      "stat_value": "50",
+      "stat_label": "facilities critical (score 15+)",
+      "stat_color": "red"
+    }
+  ],
+
+  "stories": [
+    {
+      "url": "articles/article-florida-opco.html",
+      "category": "M&A",
+      "title": "SSM Health Exits Wisconsin — Three Facilities Change Hands",
+      "description": "Complete Care at Maple Grove, Jefferson Meadows, and Christian Home transferred to new LLC operators.",
+      "date": "March 18, 2026"
+    },
+    {
+      "url": "articles/article-nexus-pavilion.html",
+      "category": "Investigation",
+      "title": "When Entities Change, Do Fines Disappear? Tracking Accountability",
+      "description": "Nexus Pavilion racked up $913K in fines before restructuring. We examine what happens to penalties after a change of hands.",
+      "date": "March 17, 2026"
+    },
+    {
+      "url": "articles/article-chains.html",
+      "category": "Chains",
+      "title": "Ensign, PACS, Genesis, Life Care: How the Big Five Stack Up",
+      "description": "Life Care leads at 3.5 stars. Genesis lags at 2.4. Inside America's largest chains.",
+      "date": "March 16, 2026"
+    },
+    {
+      "url": "articles/article-staffing.html",
+      "category": "Staffing",
+      "title": "2.1 Million Workers, 514 Million Hours: Nursing Home Staffing by the Numbers",
+      "description": "PBJ data reveals the scale of the workforce — and the 46.4% turnover crisis.",
+      "date": "March 15, 2026"
+    }
+  ],
+
+  "latest": [
+    {
+      "url": "articles/article-nexus-pavilion.html",
+      "category": "Fines",
+      "title": "Nexus Pavilion at Belleville: $913K in Fines and a Change of Hands",
+      "time": "2 hr ago"
+    },
+    {
+      "url": "articles/article-thunderbolt.html",
+      "category": "Decline Watch",
+      "title": "Thunderbolt Care Center: 134 Beds, 15 Residents — Is Closure Imminent?",
+      "time": "5 hr ago"
+    },
+    {
+      "url": "articles/article-florida-opco.html",
+      "category": "M&A",
+      "title": "Florida's Opco Wave: 100+ Facilities Restructured Under New LLCs",
+      "time": "Yesterday"
+    },
+    {
+      "url": "articles/article-masonic-village.html",
+      "category": "Ratings",
+      "title": "Masonic Village at Burlington: From 5 Stars to 1 — The Steepest Fall",
+      "time": "Yesterday"
+    },
+    {
+      "url": "articles/article.html#for-profit",
+      "category": "Quality",
+      "title": "National Quality Ratings Tick Up to 2.98 — But 73% Are For-Profit",
+      "time": "2 days ago"
+    },
+    {
+      "url": "articles/article-staffing.html",
+      "category": "Staffing",
+      "title": "Turnover Plateaus at 46.4% — What the Staffing Mandate Means Next",
+      "time": "2 days ago"
+    }
+  ],
+
+  "deep_dives": [
+    {
+      "url": "articles/article.html#for-profit",
+      "stat": "73.7%",
+      "stat_color": "brand",
+      "title": "The For-Profit Question: Who Really Runs America's Nursing Homes",
+      "description": "Two-thirds of facilities are for-profit corporations or LLCs. The ownership structure matters."
+    },
+    {
+      "url": "articles/article-thunderbolt.html",
+      "stat": "137",
+      "stat_color": "red",
+      "title": "Below Half: 137 Facilities Under 50% Occupancy",
+      "description": "When more than half of beds sit empty, closure often follows. Where these facilities are."
+    },
+    {
+      "url": "articles/article.html#big-picture",
+      "stat": "+3.1%",
+      "stat_color": "green",
+      "title": "Occupancy Rebounds: Is the Post-Pandemic Recovery Here?",
+      "description": "From 75.9% to 79.0% in two years. What's driving the gains."
+    }
+  ],
+
+  "chow_tracker": {
+    "count": 11,
+    "label": "Facilities with recent change of ownership",
+    "link": "articles/article-florida-opco.html",
+    "items": [
+      { "name": "Polaris Extended Care", "state": "AK" },
+      { "name": "Marianna Health & Rehab", "state": "FL" },
+      { "name": "Mesquite Post Acute Care", "state": "TX" }
+    ]
+  }
+}
