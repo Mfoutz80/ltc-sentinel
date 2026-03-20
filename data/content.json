@@ -15,13 +15,13 @@
   },
 
   "lead_story": {
-    "url": "articles/article.html",
-    "category": "Special Report",
-    "title": "The State of Long-Term Care in 2026: Recovery, Reshuffling, and Red Flags",
-    "description": "168 nursing homes closed. Nearly 2,000 changed owners. 5,687 showing decline signals. Two years of CMS data reveal what's really happening.",
+    "url": "articles/article-top100-downgrade-risk.html",
+    "category": "Decline Watch",
+    "title": "The Downgrade List: 100 Nursing Homes Most Likely to Fail",
+    "description": "97 of 100 are already at 1 star. 5,871 empty beds. $20.5M in fines. $600M in lost annual revenue. Our composite model identifies the facilities where closure is most likely within 12 months.",
     "author": "LTC Sentinel Research",
     "date": "March 19, 2026",
-    "read_time": "12 min read"
+    "read_time": "11 min read"
   },
 
   "analysis": [
@@ -46,6 +46,13 @@
   ],
 
   "stories": [
+    {
+      "url": "articles/article.html",
+      "category": "Special Report",
+      "title": "The State of Long-Term Care in 2026: Recovery, Reshuffling, and Red Flags",
+      "description": "168 nursing homes closed. Nearly 2,000 changed owners. 5,687 showing decline signals. Two years of CMS data reveal what's really happening.",
+      "date": "March 19, 2026"
+    },
     {
       "url": "articles/article-florida-opco.html",
       "category": "M&A",
@@ -78,6 +85,12 @@
 
   "latest": [
     {
+      "url": "articles/article-top100-downgrade-risk.html",
+      "category": "Decline Watch",
+      "title": "The Downgrade List: 100 Nursing Homes Most Likely to Fail",
+      "time": "Just now"
+    },
+    {
       "url": "articles/article-nexus-pavilion.html",
       "category": "Fines",
       "title": "Nexus Pavilion at Belleville: $913K in Fines and a Change of Hands",
@@ -106,29 +119,23 @@
       "category": "Quality",
       "title": "National Quality Ratings Tick Up to 2.98 — But 73% Are For-Profit",
       "time": "2 days ago"
-    },
-    {
-      "url": "articles/article-staffing.html",
-      "category": "Staffing",
-      "title": "Turnover Plateaus at 46.4% — What the Staffing Mandate Means Next",
-      "time": "2 days ago"
     }
   ],
 
   "deep_dives": [
+    {
+      "url": "articles/article-top100-downgrade-risk.html",
+      "stat": "100",
+      "stat_color": "red",
+      "title": "The Downgrade List: Triage Protocol for America's Most At-Risk Facilities",
+      "description": "Closure, forced sale, or conditional turnaround — our prescriptive framework for the bottom 100."
+    },
     {
       "url": "articles/article.html#for-profit",
       "stat": "73.7%",
       "stat_color": "brand",
       "title": "The For-Profit Question: Who Really Runs America's Nursing Homes",
       "description": "Two-thirds of facilities are for-profit corporations or LLCs. The ownership structure matters."
-    },
-    {
-      "url": "articles/article-thunderbolt.html",
-      "stat": "137",
-      "stat_color": "red",
-      "title": "Below Half: 137 Facilities Under 50% Occupancy",
-      "description": "When more than half of beds sit empty, closure often follows. Where these facilities are."
     },
     {
       "url": "articles/article.html#big-picture",
