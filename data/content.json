@@ -47,6 +47,13 @@
 
   "stories": [
     {
+      "url": "articles/article-partd-drug-trends.html",
+      "category": "Pharmacy",
+      "title": "Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall",
+      "description": "GLP-1 spending hit $22.3B and is on pace for $35B by 2025. Antipsychotic use holds at 16.7%. Biosimilars under 1%. What it means for rebate economics.",
+      "date": "April 6, 2026"
+    },
+    {
       "url": "articles/article-top100-downgrade-risk.html",
       "category": "Decline Watch",
       "title": "The Downgrade List: 100 Nursing Homes Most Likely to Fail",
@@ -92,16 +99,22 @@
 
   "latest": [
     {
+      "url": "articles/article-partd-drug-trends.html",
+      "category": "Pharmacy",
+      "title": "Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall",
+      "time": "Just now"
+    },
+    {
       "url": "articles/article-march-2026-pulse.html",
       "category": "Data Pulse",
       "title": "March 2026: 7 Closures, $9.3M Fines Erased, 19 Escape 1-Star",
-      "time": "Just now"
+      "time": "Today"
     },
     {
       "url": "articles/article-1star-recoveries.html",
       "category": "Quality",
       "title": "Against the Odds: 19 Nursing Homes That Escaped 1-Star in March",
-      "time": "Just now"
+      "time": "Today"
     },
     {
       "url": "articles/article-top100-downgrade-risk.html",

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall &#8212; LTC Sentinel</title>
+    <meta name="description" content="CMS Part D data shows GLP-1 spending hit $22.3B in 2023 and is on track for $35B by 2025. Antipsychotic use in nursing homes holds at 16.7%. Biosimilar adoption remains under 1%. What this means for LTC pharmacy revenue and rebate economics.">
+    <link rel="canonical" href="https://ltcsentinel.com/articles/article-partd-drug-trends.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall">
+    <meta property="og:description" content="CMS Part D data shows GLP-1 spending hit $22.3B in 2023 and is on track for $35B by 2025. Antipsychotic use in nursing homes holds at 16.7%. Biosimilar adoption remains under 1%.">
+    <meta property="og:url" content="https://ltcsentinel.com/articles/article-partd-drug-trends.html">
+    <meta property="og:site_name" content="LTC Sentinel">
+    <meta property="article:published_time" content="2026-04-06">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall">
+    <meta name="twitter:description" content="CMS Part D data shows GLP-1 spending hit $22.3B in 2023 and is on track for $35B by 2025. Antipsychotic use in nursing homes holds at 16.7%. Biosimilar adoption remains under 1%.">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": "Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall",
+        "description": "CMS Part D data analysis of drug utilization trends affecting LTC pharmacy economics.",
+        "datePublished": "2026-04-06",
+        "dateModified": "2026-04-06",
+        "author": { "@type": "Organization", "name": "LTC Sentinel" },
+        "publisher": { "@type": "Organization", "name": "LTC Sentinel", "url": "https://ltcsentinel.com" },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://ltcsentinel.com/articles/article-partd-drug-trends.html" }
+    }
+    </script>
+
+    <!--
+    DATA FILES USED:
+    1. medicare_partd_spending_by_drug_2023.csv - Medicare Part D Spending by Drug (2023)
+       Source: https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug
+       Extracted: Top drugs by spend/claims, GLP-1 totals, antipsychotic spend, biosimilar identification, YoY changes
+
+    2. quarterly_partd_spending_by_drug_2025q2.csv - Quarterly Part D Spending (through Q2 2025)
+       Source: https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug
+       Extracted: 2024 and 2025 H1 spending by drug for trend comparison
+
+    3. partd_prescribers_by_provider_2023.csv - Part D Prescriber Data (2023)
+       Source: https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/part-d-prescriber
+       Extracted: Antipsychotic claims/cost/beneficiaries by prescriber type (Antpsyct_GE65_* columns)
+
+    4. nursing_home_antipsychotic_quality_measures.csv - MDS Quality Measures (2024Q4-2025Q3)
+       Source: https://data.cms.gov/provider-data/dataset/djen-97ju (MDS Quality Measures)
+       Extracted: Measure 481 (long-stay antipsychotic use) facility-level scores, state averages, quarterly trends
+
+    5. nadac_2024.csv - National Average Drug Acquisition Cost (2024)
+       Source: https://data.cms.gov/nadac
+       Extracted: Pricing context for generic vs brand cost differentials
+    -->
+
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Inter:wght@400;450;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: {
+                    brand: { 50:'#f0f7f7',100:'#d4eaea',200:'#a9d5d6',300:'#71b5b7',400:'#4a9a9d',500:'#0d7377',600:'#0a5c5f',700:'#084a4d',800:'#063839',900:'#042526' },
+                    ink: { 50:'#fafafa',100:'#f4f4f5',200:'#e4e4e7',300:'#d4d4d8',400:'#a1a1aa',500:'#71717a',600:'#52525b',700:'#3f3f46',800:'#27272a',900:'#18181b' },
+                    signal: { red:'#dc2626', green:'#059669', amber:'#d97706' },
+                },
+                fontFamily: {
+                    display: ['"Playfair Display"','Georgia','serif'],
+                    sans: ['Inter','system-ui','sans-serif'],
+                    mono: ['"JetBrains Mono"','monospace'],
+                },
+            }}
+        }
+    </script>
+    <style>
+        html, body { overflow-x: hidden; }
+        body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+        .font-display { font-family: 'Playfair Display', Georgia, serif; }
+        .cat-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #0d7377; }
+        .fig { font-family: 'JetBrains Mono', monospace; }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: #0d7377; z-index: 100; width: 0%; transition: width 0.1s; }
+
+        .prose h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.65rem; font-weight: 800; color: #18181b; margin: 3rem 0 1rem; line-height: 1.2; }
+        .prose h3 { font-family: 'Playfair Display', Georgia, serif; font-size: 1.25rem; font-weight: 700; color: #27272a; margin: 2.25rem 0 0.75rem; line-height: 1.3; }
+        .prose p { font-family: 'Playfair Display', Georgia, serif; font-size: 1.125rem; line-height: 1.9; color: #3f3f46; margin-bottom: 1.5rem; }
+        .prose ul { margin: 1rem 0 1.75rem 1.25rem; list-style-type: disc; }
+        .prose li { font-family: 'Playfair Display', Georgia, serif; font-size: 1.05rem; line-height: 1.8; color: #3f3f46; margin-bottom: 0.6rem; }
+        .prose li strong { color: #18181b; }
+        .prose strong { color: #18181b; }
+        .prose blockquote { border-left: 3px solid #0d7377; padding: 0.25rem 0 0.25rem 1.5rem; margin: 2rem 0; }
+        .prose blockquote p { font-style: italic; color: #52525b; font-size: 1.15rem; }
+
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem -1rem; padding: 0 1rem; }
+        .data-table { width: 100%; min-width: 500px; border-collapse: collapse; margin: 1.5rem 0; font-family: 'Inter', sans-serif; font-size: 0.8rem; }
+        .data-table th { background: #fafafa; padding: 0.6rem 0.65rem; text-align: left; font-weight: 700; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: #52525b; border-bottom: 2px solid #e4e4e7; }
+        .data-table td { padding: 0.55rem 0.65rem; border-bottom: 1px solid #f4f4f5; color: #3f3f46; }
+        .data-table tr:hover { background: #fafafa; }
+        .tag { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 600; }
+        .tag-red { background: #fef2f2; color: #dc2626; }
+        .tag-green { background: #f0fdf4; color: #059669; }
+        .tag-amber { background: #fffbeb; color: #d97706; }
+
+        .callout { border-left: 3px solid; padding: 1rem 1.25rem; margin: 1.75rem 0; border-radius: 0 4px 4px 0; }
+        .callout p { margin-bottom: 0 !important; font-size: 0.9rem !important; font-family: 'Inter', sans-serif !important; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin: 1.5rem 0; }
+        .stat-item { text-align: center; padding: 1rem 0.5rem; border: 1px solid #f4f4f5; border-radius: 4px; background: #fafafa; }
+        .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; }
+        .stat-desc { font-family: 'Inter', sans-serif; font-size: 0.6rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-white text-ink-900">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="bg-ink-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-8 flex items-center justify-between text-[11px] tracking-wide">
+            <div class="flex items-center gap-1.5"><span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse"></span><span class="text-ink-400 font-medium">LATEST DATA: March 2026 CMS Release</span></div>
+            <span class="text-ink-400">April 6, 2026</span>
+        </div>
+    </div>
+
+    <header class="border-b border-ink-200 sticky top-0 bg-white/95 backdrop-blur-sm z-50">
+        <div class="max-w-7xl mx-auto px-6 flex items-center justify-between py-3">
+            <a href="../index.html" class="font-display text-xl font-black text-ink-900 tracking-tight">LTC Sentinel</a>
+            <nav class="hidden md:flex items-center gap-6 text-[13px] font-semibold text-ink-500">
+                <a href="article.html" class="text-brand-500">Reports</a>
+                <a href="../dashboard.html" class="hover:text-ink-900 transition">Data</a>
+                <a href="../about.html" class="hover:text-ink-900 transition">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <article class="max-w-[700px] mx-auto px-4 sm:px-5 pt-12 pb-16">
+        <div class="cat-tag mb-3">Pharmacy &amp; Drug Utilization</div>
+        <h1 class="font-display text-[1.75rem] sm:text-[2.5rem] md:text-[3.25rem] font-black leading-[1.08] text-ink-900 mb-5">Part D in the Nursing Home: GLP-1s Surge, Antipsychotics Persist, Biosimilars Stall</h1>
+        <p class="text-lg text-ink-500 leading-relaxed mb-6" style="font-family:'Playfair Display',Georgia,serif">GLP-1 spending hit $22.3 billion in 2023 and is on pace for $35 billion by year-end 2025. Antipsychotic use in nursing homes holds at 16.7% despite a decade of CMS pressure. Biosimilar adoption in Part D remains below 1%. Here is what the numbers mean for LTC pharmacy revenue mix and rebate economics.</p>
+        <div class="flex items-center gap-3 pb-6 mb-10 border-b border-ink-200 text-sm">
+            <span class="font-semibold text-ink-800">LTC Sentinel Research</span>
+            <span class="text-ink-300">&middot;</span>
+            <span class="text-ink-400">April 6, 2026</span>
+            <span class="text-ink-300">&middot;</span>
+            <span class="text-ink-400">12 min read</span>
+        </div>
+        <div class="prose">
+
+            <p>Every Part D claim that runs through an LTC pharmacy carries two economics: the adjudicated price and the downstream rebate. When drug mix shifts, both move. And right now, the mix is shifting faster than at any point in the past decade.</p>
+
+            <p>We pulled five CMS datasets covering Part D spending (2019&#8211;2025), prescriber-level antipsychotic claims, MDS quality measures across 14,703 nursing homes, NADAC acquisition costs, and quarterly utilization through Q2 2025. The picture is clear: GLP-1 receptor agonists are rewriting LTC pharmacy economics, antipsychotic reduction has plateaued, and the biosimilar opportunity that Part D pharmacies were promised has not materialized.</p>
+
+            <h2>The Big Picture: Where Part D Dollars Go</h2>
+
+            <div class="stat-row" style="grid-template-columns: repeat(2,1fr)">
+                <div class="stat-item"><div class="stat-num text-brand-500">$276B</div><div class="stat-desc">Total Part D Spend 2023</div></div>
+                <div class="stat-item"><div class="stat-num text-signal-red">$22.3B</div><div class="stat-desc">GLP-1 Spend 2023</div></div>
+                <div class="stat-item"><div class="stat-num text-signal-amber">$7.2B</div><div class="stat-desc">Antipsychotic Spend</div></div>
+                <div class="stat-item"><div class="stat-num text-ink-900">$199M</div><div class="stat-desc">Biosimilar Spend</div></div>
+            </div>
+
+            <p>Eliquis (apixaban) remains the single most expensive Part D drug at <strong>$18.3 billion</strong> in 2023. But the GLP-1 class, taken collectively, already exceeds it. Ozempic alone reached $9.2 billion, Trulicity $7.4 billion, and Mounjaro $2.4 billion in its second year on market. The class share of total Part D spending grew from 8.1% in 2023 to 9.6% in 2024 to 10.7% in the first half of 2025.</p>
+
+            <h2>The GLP-1 Explosion: $22B and Accelerating</h2>
+
+            <div class="table-wrap"><table class="data-table">
+                <thead><tr><th>Drug</th><th style="text-align:right">2023 Spend</th><th style="text-align:right">2024 Spend</th><th style="text-align:right">2025 H1</th><th style="text-align:right">YoY &#916;</th><th>Note</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Ozempic</strong> (semaglutide)</td><td class="fig" style="text-align:right">$9.2B</td><td class="fig" style="text-align:right">$11.8B</td><td class="fig" style="text-align:right">$6.4B</td><td class="fig" style="text-align:right"><span class="tag tag-green">+99%</span></td><td>Unit cost down 24%</td></tr>
+                    <tr><td><strong>Trulicity</strong> (dulaglutide)</td><td class="fig" style="text-align:right">$7.4B</td><td class="fig" style="text-align:right">$5.5B</td><td class="fig" style="text-align:right">$2.4B</td><td class="fig" style="text-align:right"><span class="tag tag-red">-26%</span></td><td>Losing share to newer agents</td></tr>
+                    <tr><td><strong>Mounjaro</strong> (tirzepatide)</td><td class="fig" style="text-align:right">$2.4B</td><td class="fig" style="text-align:right">$6.3B</td><td class="fig" style="text-align:right">$5.7B</td><td class="fig" style="text-align:right"><span class="tag tag-green">+168%</span></td><td>On pace for ~$11.4B FY 2025</td></tr>
+                    <tr><td><strong>Wegovy</strong> (semaglutide, obesity)</td><td class="fig" style="text-align:right">$0.2M</td><td class="fig" style="text-align:right">$301M</td><td class="fig" style="text-align:right">$413M</td><td class="fig" style="text-align:right"><span class="tag tag-green">+NM</span></td><td>Part D coverage expanding</td></tr>
+                    <tr><td><strong>Zepbound</strong> (tirzepatide, obesity)</td><td class="fig" style="text-align:right">n/a</td><td class="fig" style="text-align:right">$0.4M</td><td class="fig" style="text-align:right">$250M</td><td class="fig" style="text-align:right"><span class="tag tag-green">+NM</span></td><td>New entrant, fast ramp</td></tr>
+                </tbody>
+            </table></div>
+
+            <p>The average cost per GLP-1 claim is <strong>$1,369</strong>, roughly 7.7x the average Part D claim. For an LTC pharmacy filling 50 GLP-1 prescriptions per month, that is $822,000 in annual drug cost running through the adjudication system. The rebate implications depend on formulary position and manufacturer contracts, but GLP-1 rebates have historically been aggressive (30&#8211;50% of WAC for preferred formulary placement), making this a significant revenue line for PBMs and plan sponsors even as net cost to the system grows.</p>
+
+            <h3>LTC-Specific GLP-1 Considerations</h3>
+
+            <p>GLP-1 penetration in nursing home populations is lower than in community settings. Most LTC residents are dual-eligible, and state Medicaid programs have varied prior authorization requirements for GLP-1 agents. The diabetes indication drives most LTC GLP-1 utilization; the obesity indication (Wegovy, Zepbound) has limited applicability in a population where unintentional weight loss is a more common concern than obesity.</p>
+
+            <div class="callout bg-brand-50 border-brand-500">
+                <p><strong>Rebate impact:</strong> As Trulicity loses share to Mounjaro and Ozempic, LTC pharmacies with legacy Trulicity rebate contracts will see erosion. Mounjaro&#8217;s rebate structure is less mature. Pharmacies that have not renegotiated GLP-1 rebate terms since 2023 are leaving money on the table.</p>
+            </div>
+
+            <h2>Antipsychotics: $7.2 Billion and Holding</h2>
+
+            <p>CMS has spent over a decade pushing nursing homes to reduce antipsychotic use. The National Partnership to Improve Dementia Care launched in 2012. Yet the latest MDS quality data (measure 481, period 2024Q4&#8211;2025Q3) shows a national average of <strong>16.71%</strong> of long-stay nursing home residents receiving antipsychotic medications. The median is slightly lower at 14.61%, but the 90th percentile sits at 29.6%.</p>
+
+            <div class="table-wrap"><table class="data-table">
+                <thead><tr><th>Quarter</th><th style="text-align:right">Avg Rate</th><th style="text-align:right">Change</th></tr></thead>
+                <tbody>
+                    <tr><td>Q1 (2024Q4)</td><td class="fig" style="text-align:right">16.85%</td><td class="fig" style="text-align:right"></td></tr>
+                    <tr><td>Q2 (2025Q1)</td><td class="fig" style="text-align:right">16.75%</td><td class="fig" style="text-align:right"><span class="tag tag-green">-0.10</span></td></tr>
+                    <tr><td>Q3 (2025Q2)</td><td class="fig" style="text-align:right">16.52%</td><td class="fig" style="text-align:right"><span class="tag tag-green">-0.23</span></td></tr>
+                    <tr><td>Q4 (2025Q3)</td><td class="fig" style="text-align:right">16.24%</td><td class="fig" style="text-align:right"><span class="tag tag-green">-0.28</span></td></tr>
+                </tbody>
+            </table></div>
+
+            <p>The quarterly trend shows a modest decline of 0.60 percentage points over four quarters. That is not nothing, but after 14 years of the national initiative, rates above 16% suggest a floor. The low-hanging fruit was picked years ago. What remains is a population with genuine clinical need (schizophrenia, severe behavioral symptoms unresponsive to non-pharmacological interventions) and a population where prescribing persists out of habit, convenience, or staffing constraints.</p>
+
+            <h3>State Variation Tells the Real Story</h3>
+
+            <div class="table-wrap"><table class="data-table">
+                <thead><tr><th>State</th><th style="text-align:right">Antipsychotic Rate</th><th>Context</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>South Dakota</strong></td><td class="fig" style="text-align:right"><span class="tag tag-red">25.1%</span></td><td>Highest in nation</td></tr>
+                    <tr><td><strong>Missouri</strong></td><td class="fig" style="text-align:right"><span class="tag tag-red">25.0%</span></td><td>Also high decline-facility count</td></tr>
+                    <tr><td><strong>Louisiana</strong></td><td class="fig" style="text-align:right"><span class="tag tag-red">24.4%</span></td><td></td></tr>
+                    <tr><td><strong>Wyoming</strong></td><td class="fig" style="text-align:right"><span class="tag tag-red">24.1%</span></td><td>Small state, high rate</td></tr>
+                    <tr><td>National Avg</td><td class="fig" style="text-align:right">16.7%</td><td></td></tr>
+                    <tr><td><strong>Ohio</strong></td><td class="fig" style="text-align:right"><span class="tag tag-green">11.5%</span></td><td></td></tr>
+                    <tr><td><strong>Texas</strong></td><td class="fig" style="text-align:right"><span class="tag tag-green">10.8%</span></td><td>Lowest large state</td></tr>
+                    <tr><td><strong>Florida</strong></td><td class="fig" style="text-align:right"><span class="tag tag-green">9.8%</span></td><td></td></tr>
+                    <tr><td><strong>DC</strong></td><td class="fig" style="text-align:right"><span class="tag tag-green">8.6%</span></td><td>Lowest</td></tr>
+                </tbody>
+            </table></div>
+
+            <p>The spread between South Dakota (25.1%) and DC (8.6%) is 16.5 percentage points. That gap is not explained by patient acuity alone. It reflects differences in state regulatory enforcement, availability of behavioral health consultants, staffing ratios (facilities with better staffing use fewer chemical restraints), and prescriber culture.</p>
+
+            <h3>Who Is Prescribing: Nurse Practitioners Lead</h3>
+
+            <p>Part D prescriber data shows <strong>13.1 million antipsychotic claims</strong> for beneficiaries aged 65+ in 2023, totaling <strong>$2.33 billion</strong> across 1.63 million beneficiaries. The breakdown by prescriber type reveals that <strong>nurse practitioners write 27.5% of all antipsychotic claims</strong> for seniors, more than any other provider type including psychiatrists.</p>
+
+            <div class="table-wrap"><table class="data-table">
+                <thead><tr><th>Prescriber Type</th><th style="text-align:right">Claims</th><th style="text-align:right">Cost</th><th style="text-align:right">Share</th><th style="text-align:right">$/Claim</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Nurse Practitioner</strong></td><td class="fig" style="text-align:right">3.6M</td><td class="fig" style="text-align:right">$691M</td><td class="fig" style="text-align:right">27.5%</td><td class="fig" style="text-align:right">$192</td></tr>
+                    <tr><td><strong>Psychiatry</strong></td><td class="fig" style="text-align:right">2.6M</td><td class="fig" style="text-align:right">$543M</td><td class="fig" style="text-align:right">19.8%</td><td class="fig" style="text-align:right">$212</td></tr>
+                    <tr><td><strong>Internal Medicine</strong></td><td class="fig" style="text-align:right">2.4M</td><td class="fig" style="text-align:right">$239M</td><td class="fig" style="text-align:right">18.3%</td><td class="fig" style="text-align:right">$100</td></tr>
+                    <tr><td><strong>Family Practice</strong></td><td class="fig" style="text-align:right">2.3M</td><td class="fig" style="text-align:right">$232M</td><td class="fig" style="text-align:right">17.6%</td><td class="fig" style="text-align:right">$101</td></tr>
+                    <tr><td><strong>Geriatric Medicine</strong></td><td class="fig" style="text-align:right">184K</td><td class="fig" style="text-align:right">$19M</td><td class="fig" style="text-align:right">1.4%</td><td class="fig" style="text-align:right">$103</td></tr>
+                </tbody>
+            </table></div>
+
+            <p>The cost-per-claim gap is notable. Psychiatrists average $212 per claim, driven by higher use of branded long-acting injectables (Invega Sustenna at $1.82B, Abilify Maintena at $637M). Internists and family practitioners average around $100 per claim, reflecting generic oral antipsychotic prescribing (quetiapine, risperidone, olanzapine). For LTC pharmacies, the prescriber mix at each facility directly affects both drug cost and rebate yield per antipsychotic script.</p>
+
+            <div class="callout bg-red-50 border-signal-red">
+                <p><strong>Rebate impact:</strong> Total antipsychotic Part D spend is $7.24 billion, but the rebate-rich segment is concentrated in branded LAIs (Invega Sustenna, Vraylar, Abilify Maintena, Rexulti), which account for $4.5 billion. Generic quetiapine (8.96 million claims) generates high volume but negligible rebates. As CMS continues to pressure antipsychotic reduction, the branded LAI volume that supports rebate revenue is most at risk of clinical scrutiny.</p>
+            </div>
+
+            <h2>Biosimilars: The Promise That Has Not Arrived</h2>
+
+            <p>Total biosimilar spend in Part D in 2023: <strong>$199 million</strong>. That is 0.07% of total Part D spending. For context, Eliquis alone is 92x larger.</p>
+
+            <p>The adoption numbers are stark:</p>
+
+            <ul>
+                <li><strong>Adalimumab (Humira):</strong> Biosimilars (Amjevita, Cyltezo, Hadlima) captured roughly $43 million vs. $6+ billion for Humira branded products. Biosimilar share under 1%.</li>
+                <li><strong>Insulin glargine:</strong> Semglee and other biosimilar/interchangeable products totaled ~$63 million vs. $5.9 billion for Lantus/Basaglar/Toujeo. Under 1% share.</li>
+                <li><strong>Infliximab (Remicade):</strong> The one bright spot. Biosimilars (Inflectra, Renflexis, Avsola) captured $42 million vs. $111 million for Remicade, a 27% share. But infliximab is primarily a medical benefit (Part B) drug, with limited Part D relevance in LTC.</li>
+            </ul>
+
+            <p>Some biosimilars showed strong percentage growth (Semglee +569%, Nyvepria +240%), but from bases so small that the absolute dollar impact is negligible.</p>
+
+            <div class="callout bg-brand-50 border-brand-500">
+                <p><strong>Rebate trade-off:</strong> The biosimilar paradox for LTC pharmacies is straightforward. Brand drugs with high WAC generate large rebates. Biosimilars with lower WAC generate lower (or no) rebates, even though acquisition cost drops. An LTC pharmacy switching from Humira ($6,922/month WAC) to Amjevita ($3,288/month WAC) may save on drug cost but loses 100% of the Humira rebate. Net economics depend on the specific contract, but in many cases the rebate loss exceeds the acquisition savings. Until biosimilar manufacturers offer competitive rebates, or PBMs restructure formularies to mandate biosimilar use, adoption will remain slow.</p>
+            </div>
+
+            <h2>Top 10 Drug Classes: Spend and Claims</h2>
+
+            <div class="table-wrap"><table class="data-table">
+                <thead><tr><th>#</th><th>Drug/Class</th><th style="text-align:right">2023 Spend</th><th style="text-align:right">Claims</th><th style="text-align:right">$/Claim</th><th style="text-align:right">YoY &#916;</th></tr></thead>
+                <tbody>
+                    <tr><td class="fig">1</td><td><strong>Eliquis</strong> (apixaban)</td><td class="fig" style="text-align:right">$18.3B</td><td class="fig" style="text-align:right">14.2M</td><td class="fig" style="text-align:right">$1,289</td><td class="fig" style="text-align:right"><span class="tag tag-green">+8%</span></td></tr>
+                    <tr><td class="fig">2</td><td><strong>Ozempic</strong> (semaglutide)</td><td class="fig" style="text-align:right">$9.2B</td><td class="fig" style="text-align:right">6.7M</td><td class="fig" style="text-align:right">$1,369</td><td class="fig" style="text-align:right"><span class="tag tag-green">+99%</span></td></tr>
+                    <tr><td class="fig">3</td><td><strong>Xarelto</strong> (rivaroxaban)</td><td class="fig" style="text-align:right">$7.8B</td><td class="fig" style="text-align:right">9.1M</td><td class="fig" style="text-align:right">$857</td><td class="fig" style="text-align:right"><span class="tag tag-red">-3%</span></td></tr>
+                    <tr><td class="fig">4</td><td><strong>Trulicity</strong> (dulaglutide)</td><td class="fig" style="text-align:right">$7.4B</td><td class="fig" style="text-align:right">8.9M</td><td class="fig" style="text-align:right">$831</td><td class="fig" style="text-align:right"><span class="tag tag-red">-5%</span></td></tr>
+                    <tr><td class="fig">5</td><td><strong>Jardiance</strong> (empagliflozin)</td><td class="fig" style="text-align:right">$7.0B</td><td class="fig" style="text-align:right">11.7M</td><td class="fig" style="text-align:right">$598</td><td class="fig" style="text-align:right"><span class="tag tag-green">+12%</span></td></tr>
+                    <tr><td class="fig">6</td><td><strong>Entresto</strong> (sacubitril/valsartan)</td><td class="fig" style="text-align:right">$6.7B</td><td class="fig" style="text-align:right">7.2M</td><td class="fig" style="text-align:right">$931</td><td class="fig" style="text-align:right"><span class="tag tag-green">+10%</span></td></tr>
+                    <tr><td class="fig">7</td><td><strong>Lantus/insulin glargine</strong></td><td class="fig" style="text-align:right">$5.9B</td><td class="fig" style="text-align:right">8.4M</td><td class="fig" style="text-align:right">$702</td><td class="fig" style="text-align:right"><span class="tag tag-red">-11%</span></td></tr>
+                    <tr><td class="fig">8</td><td><strong>Atorvastatin</strong> (generic)</td><td class="fig" style="text-align:right">$1.1B</td><td class="fig" style="text-align:right">68.5M</td><td class="fig" style="text-align:right">$16</td><td class="fig" style="text-align:right"><span class="tag tag-red">-8%</span></td></tr>
+                    <tr><td class="fig">9</td><td><strong>Gabapentin</strong> (generic)</td><td class="fig" style="text-align:right">$0.7B</td><td class="fig" style="text-align:right">26.4M</td><td class="fig" style="text-align:right">$27</td><td class="fig" style="text-align:right"><span class="tag tag-red">-12%</span></td></tr>
+                    <tr><td class="fig">10</td><td><strong>Quetiapine</strong> (generic)</td><td class="fig" style="text-align:right">$0.4B</td><td class="fig" style="text-align:right">8.96M</td><td class="fig" style="text-align:right">$45</td><td class="fig" style="text-align:right"><span class="tag tag-red">-28%</span></td></tr>
+                </tbody>
+            </table></div>
+
+            <p>The table illustrates the two-tier Part D economy. The top seven drugs are all branded, averaging $950 per claim and generating the rebate volume that supports PBM and plan sponsor economics. The bottom three are generics with massive claim counts but minimal per-claim revenue. LTC pharmacies live in both worlds simultaneously: high-volume generic dispensing for margin, high-cost specialty dispensing for rebate participation.</p>
+
+            <h2>What This Means for LTC Pharmacy Economics</h2>
+
+            <h3>Revenue Mix Is Shifting Toward Fewer, Costlier Scripts</h3>
+
+            <p>GLP-1s at $1,369 per claim are replacing Trulicity volume (down 26% YoY) with Mounjaro volume (up 168%). The net effect is higher per-claim cost but potentially different rebate terms. LTC pharmacies that built rebate models around Trulicity&#8217;s Lilly contract need to reassess as Mounjaro cannibalizes from the same manufacturer but under different formulary economics.</p>
+
+            <h3>Antipsychotic Rebate Revenue Has a Ceiling</h3>
+
+            <p>The $4.5 billion in branded antipsychotic spend (primarily LAIs) is the rebate-rich core of LTC antipsychotic economics. With CMS maintaining pressure and the January 2026 refresh introducing a respecified antipsychotic quality measure using claims data instead of MDS self-report, expect tighter scrutiny. Branded LAI prescribing in facilities with high antipsychotic rates will draw more survey attention, creating regulatory risk for the highest-rebate prescribing patterns.</p>
+
+            <h3>Biosimilars Are Not a Near-Term Rebate Play</h3>
+
+            <p>At 0.07% Part D share, biosimilars are not yet a factor in LTC pharmacy rebate economics. The structural problem is that PBMs and manufacturers have not aligned incentives for biosimilar adoption in Part D the way they have (slowly) in Part B. Until formulary design forces biosimilar substitution or biosimilar manufacturers offer rebates competitive with originator products, LTC pharmacies should not model biosimilar conversion as a revenue opportunity.</p>
+
+            <h3>Three Actions for LTC Pharmacy Operators</h3>
+
+            <ul>
+                <li><strong>Renegotiate GLP-1 rebate contracts now.</strong> If your rebate agreements are based on 2022-2023 Trulicity-dominated volume, you are misaligned with 2025 prescribing patterns. Mounjaro and Ozempic require separate manufacturer negotiations.</li>
+                <li><strong>Model antipsychotic revenue under CMS&#8217;s new claims-based measure.</strong> The respecified measure is harder to manage than the old MDS self-report. Facilities that have been &#8220;coding around&#8221; antipsychotic use on MDS submissions will see higher reported rates under the claims methodology, triggering more interventions and potentially reducing branded LAI volume.</li>
+                <li><strong>Do not chase biosimilar conversion for rebate purposes.</strong> The math does not work yet. If you are converting to biosimilars, do it for acquisition cost savings and frame it as a cost-reduction play, not a rebate play. The rebate upside is years away.</li>
+            </ul>
+
+            <blockquote><p>The drugs that generate the most claims are not the drugs that generate the most revenue. And the drugs that generate the most revenue are not the drugs that generate the most rebates. LTC pharmacy operators who conflate these three lines will misallocate resources. Track each separately.</p></blockquote>
+
+            <!-- DATA SOURCES -->
+            <div class="mt-12 pt-6 border-t border-ink-200 not-prose">
+                <div class="text-[11px] text-ink-400 leading-relaxed" style="font-family:Inter,sans-serif">
+                    <p class="font-bold text-ink-500 text-xs mb-2">Data Sources</p>
+                    <ul class="space-y-1.5 list-none ml-0">
+                        <li><strong>Medicare Part D Spending by Drug (2023):</strong> <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug" class="text-brand-500 hover:text-brand-600">data.cms.gov</a>. Annual spending, claims, beneficiaries, and YoY changes by drug. Data year 2023, with 2019&#8211;2023 trend columns.</li>
+                        <li><strong>Quarterly Part D Spending by Drug (through Q2 2025):</strong> Same source. Used for 2024 and 2025 H1 trend analysis.</li>
+                        <li><strong>Part D Prescriber Data (2023):</strong> <a href="https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-opioid-prescribing-rates/part-d-prescriber" class="text-brand-500 hover:text-brand-600">data.cms.gov</a>. Provider-level prescribing with antipsychotic-specific columns (Antpsyct_GE65_Tot_Clms, Antpsyct_GE65_Tot_Drug_Cst, Antpsyct_GE65_Tot_Benes). 1.38M providers.</li>
+                        <li><strong>MDS Quality Measures, Measure 481 (2024Q4&#8211;2025Q3):</strong> <a href="https://data.cms.gov/provider-data/dataset/djen-97ju" class="text-brand-500 hover:text-brand-600">data.cms.gov</a>. Facility-level long-stay antipsychotic use rates. 14,703 facilities.</li>
+                        <li><strong>NADAC (National Average Drug Acquisition Cost, 2024):</strong> <a href="https://data.cms.gov/nadac" class="text-brand-500 hover:text-brand-600">data.medicaid.gov</a>. Weekly pricing through 12/25/2024. Used for generic vs. brand cost context.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <footer class="bg-ink-900 text-ink-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row justify-between gap-3 text-[11px]">
+            <a href="../index.html" class="font-display text-lg font-bold text-white">LTC Sentinel</a>
+            <p>&copy; 2026 LTC Sentinel. Data sourced from CMS. Not affiliated with CMS or HHS.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement;
+            const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+        });
+    </script>
+</body>
+</html>
